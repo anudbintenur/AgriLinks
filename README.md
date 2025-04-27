@@ -1,3 +1,3 @@
 # AgriLinks
 
-http://localhost/AgriLinks/loginAL.html
+http://localhost/AgriLinks/index.html
