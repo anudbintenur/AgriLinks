@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 25, 2025 at 02:50 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost
+-- Generation Time: Apr 27, 2025 at 04:28 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -131,7 +131,68 @@ INSERT INTO `harvested_batch` (`batch_id`, `farmer_id`, `crop_name`, `crop_type`
 (12, 1, 'Orange', 'Fruit', '2025-06-20', 90, 1800.00, 2),
 (13, 1, 'Banana', 'Fruit', '2025-06-25', 110, 1320.00, 3),
 (14, 1, 'Tomato', 'Vegetable', '2025-06-28', 180, 3240.00, 4),
-(15, 1, 'Carrot', 'Vegetable', '2025-07-02', 150, 1800.00, 6);
+(15, 1, 'Carrot', 'Vegetable', '2025-07-02', 150, 1800.00, 6),
+(17, 1, 'Dragon Fruit', 'Fruit', '2025-10-10', 5000, 500.00, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shipping_harvest`
+--
+
+CREATE TABLE `shipping_harvest` (
+  `shipping_id` int(11) NOT NULL,
+  `batch_id` int(11) NOT NULL,
+  `farmer_id` int(11) NOT NULL,
+  `crop_name` varchar(100) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `weight` decimal(10,2) NOT NULL,
+  `farmer_name` varchar(100) NOT NULL,
+  `from_location` varchar(255) NOT NULL,
+  `to_location` varchar(255) NOT NULL,
+  `shipping_status` enum('Pending','Shipped','In Transit','Delivered') DEFAULT 'Pending',
+  `shipping_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `delivery_time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `shipping_harvest`
+--
+
+INSERT INTO `shipping_harvest` (`shipping_id`, `batch_id`, `farmer_id`, `crop_name`, `quantity`, `weight`, `farmer_name`, `from_location`, `to_location`, `shipping_status`, `shipping_time`, `delivery_time`) VALUES
+(1, 1, 1, 'Apple', 100, 1500.00, 'Muntasir Rafin', 'Dhaka', 'Sylhet', 'Shipped', '2025-04-26 10:01:40', NULL),
+(2, 2, 1, 'Orange', 80, 1600.00, 'Muntasir Rafin', 'Dhaka', 'Munshiganj', 'Shipped', '2025-04-26 10:45:30', NULL),
+(3, 3, 1, 'Banana', 120, 1440.00, 'Muntasir Rafin', 'Dhaka', 'Barishal', 'Shipped', '2025-04-26 10:45:27', NULL),
+(4, 4, 1, 'Tomato', 150, 2700.00, 'Muntasir Rafin', 'Dhaka', 'Khulna', 'Shipped', '2025-04-26 12:27:13', '2025-04-26 18:27:25'),
+(5, 5, 1, 'Potato', 200, 5000.00, 'Muntasir Rafin', 'Dhaka', 'Rangpur', 'Shipped', '2025-04-26 13:01:26', '2025-04-26 19:01:29'),
+(6, 6, 1, 'Carrot', 120, 1440.00, 'Muntasir Rafin', 'Dhaka', 'Kolkata', 'Pending', '2025-04-26 15:02:22', NULL),
+(7, 7, 1, 'Cucumber', 90, 1080.00, 'Muntasir Rafin', 'Dhaka', 'Vola', 'Pending', '2025-04-26 15:13:56', NULL),
+(8, 8, 1, 'Pineapple', 50, 5000.00, 'Muntasir Rafin', 'Dhaka', 'Sylhet', 'Shipped', '2025-04-26 16:15:34', '2025-04-26 22:15:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shipping_history`
+--
+
+CREATE TABLE `shipping_history` (
+  `history_id` int(11) NOT NULL,
+  `shipping_id` int(11) DEFAULT NULL,
+  `driver_id` int(11) DEFAULT NULL,
+  `driver_name` varchar(255) DEFAULT NULL,
+  `from_location` varchar(255) DEFAULT NULL,
+  `to_location` varchar(255) DEFAULT NULL,
+  `shipping_time` datetime DEFAULT NULL,
+  `delivery_time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `shipping_history`
+--
+
+INSERT INTO `shipping_history` (`history_id`, `shipping_id`, `driver_id`, `driver_name`, `from_location`, `to_location`, `shipping_time`, `delivery_time`) VALUES
+(1, 5, 2, 'rafin_driver', 'Dhaka', 'Rangpur', '2025-04-26 19:01:26', '2025-04-26 19:01:29'),
+(2, 8, 2, 'rafin_driver', 'Dhaka', 'Sylhet', '2025-04-26 22:15:34', '2025-04-26 22:15:43');
 
 -- --------------------------------------------------------
 
@@ -156,12 +217,12 @@ CREATE TABLE `user_dataal` (
 --
 
 INSERT INTO `user_dataal` (`id`, `username`, `password`, `role`, `name`, `email`, `dob`, `address`, `created_at`) VALUES
+(0, 'rafin_admin', '11111', 'Admin', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
 (1, 'rafin_farmer', '11111', 'Farmer', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
 (2, 'rafin_driver', '11111', 'Driver', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
-(3, 'rafin_seller', '11111', 'Seller', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
+(3, 'rafin_warehouse_manager', '11111', 'Warehouse Manager', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
 (4, 'rafin_inspector', '11111', 'Inspector', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
-(5, 'rafin_packer', '11111', 'Packer', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34'),
-(6, 'rafin_admin', '11111', 'Admin', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34');
+(5, 'rafin_packer', '11111', 'Packer', 'Muntasir Rafin', 'mun.rafin@gmail.com', '2002-10-10', 'Dhaka', '2025-04-25 09:52:34');
 
 --
 -- Indexes for dumped tables
@@ -190,6 +251,22 @@ ALTER TABLE `harvested_batch`
   ADD KEY `grading_id` (`grading_id`);
 
 --
+-- Indexes for table `shipping_harvest`
+--
+ALTER TABLE `shipping_harvest`
+  ADD PRIMARY KEY (`shipping_id`),
+  ADD KEY `batch_id` (`batch_id`),
+  ADD KEY `farmer_id` (`farmer_id`);
+
+--
+-- Indexes for table `shipping_history`
+--
+ALTER TABLE `shipping_history`
+  ADD PRIMARY KEY (`history_id`),
+  ADD KEY `shipping_id` (`shipping_id`),
+  ADD KEY `driver_id` (`driver_id`);
+
+--
 -- Indexes for table `user_dataal`
 --
 ALTER TABLE `user_dataal`
@@ -216,7 +293,19 @@ ALTER TABLE `grading_criteria`
 -- AUTO_INCREMENT for table `harvested_batch`
 --
 ALTER TABLE `harvested_batch`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `shipping_harvest`
+--
+ALTER TABLE `shipping_harvest`
+  MODIFY `shipping_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `shipping_history`
+--
+ALTER TABLE `shipping_history`
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_dataal`
@@ -241,6 +330,20 @@ ALTER TABLE `graded_batch`
 ALTER TABLE `harvested_batch`
   ADD CONSTRAINT `harvested_batch_ibfk_1` FOREIGN KEY (`farmer_id`) REFERENCES `user_dataal` (`id`),
   ADD CONSTRAINT `harvested_batch_ibfk_2` FOREIGN KEY (`grading_id`) REFERENCES `grading_criteria` (`grading_id`);
+
+--
+-- Constraints for table `shipping_harvest`
+--
+ALTER TABLE `shipping_harvest`
+  ADD CONSTRAINT `shipping_harvest_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `harvested_batch` (`batch_id`),
+  ADD CONSTRAINT `shipping_harvest_ibfk_2` FOREIGN KEY (`farmer_id`) REFERENCES `user_dataal` (`id`);
+
+--
+-- Constraints for table `shipping_history`
+--
+ALTER TABLE `shipping_history`
+  ADD CONSTRAINT `shipping_history_ibfk_1` FOREIGN KEY (`shipping_id`) REFERENCES `shipping_harvest` (`batch_id`),
+  ADD CONSTRAINT `shipping_history_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `user_dataal` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

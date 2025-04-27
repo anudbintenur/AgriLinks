@@ -52,8 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 'Packer':
                     header("Location: packer_dashboardAL.php");
                     break;
-                case 'Seller':
-                    header("Location: seller_dashboardAL.php");
+                case 'Warehouse Manager':
+                    header("Location: warehouse_manager_dashboardAL.php");
                     break;
                 default:
                     $_SESSION['error'] = "Unauthorized role.";
