@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 'Driver':
                     header("Location: driver_dashboardAL.php");
                     break;
-                case 'Inspector': // match exactly what's in your database
+                case 'Inspector':
                     header("Location: inspector_dashboardAL.php");
                     break;
                 case 'Packer':
