@@ -4,7 +4,7 @@ session_start();
 include "./dbAL.php";
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Driver' && $_SESSION['role'] !== 'Admin') {
     header("Location: loginAL.php");
     exit();
 }

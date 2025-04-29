@@ -2,7 +2,7 @@
 session_start();
 include "./dbAL.php";
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Farmer' && $_SESSION['role'] !== 'Admin') {
     header("Location: loginAL.php");
     exit();
 }

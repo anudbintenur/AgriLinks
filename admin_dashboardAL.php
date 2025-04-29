@@ -1,104 +1,114 @@
 <?php
 session_start();
-echo "Welcome, " . $_SESSION['admin_username'];
+include "./dbAL.php";
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: loginAL.php");
+    exit();
+}
+
+$username = $_SESSION['username'] ?? 'Unknown';
+$role = $_SESSION['role'] ?? 'Guest';
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AgriLinks Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <title>AgriLinks Unified Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            background-color: #fff5f5;
+        }
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background: #f1f5f9;
-    }
+        .sidebar {
+            width: 230px;
+            background: linear-gradient(to bottom, #d32f2f, #f44336, #fff);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            position: fixed;
+        }
 
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background: linear-gradient(180deg, #2c5f2d, #97bc62);
-      color: #fff;
-      height: 100vh;
-      position: fixed;
-      padding-top: 20px;
-    }
+        .sidebar h2 {
+            font-size: 1.6rem;
+            margin-bottom: 30px;
+            color: #fff;
+        }
 
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 24px;
-    }
+        .sidebar a {
+            width: 90%;
+            padding: 12px 15px;
+            margin: 5px 0;
+            text-decoration: none;
+            color: #fff;
+            background: #e53935;
+            border-radius: 8px;
+            text-align: left;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
 
-    .sidebar ul {
-      list-style: none;
-    }
+        .sidebar a:hover {
+            background: #c62828;
+        }
 
-    .sidebar ul li {
-      padding: 15px 20px;
-    }
+        .main-content {
+            margin-left: 230px;
+            width: calc(100% - 230px);
+            background-color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-    .sidebar ul li a {
-      color: white;
-      text-decoration: none;
-      display: block;
-      transition: background 0.3s;
-    }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-    .sidebar ul li a:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 5px;
-    }
-
-    /* Main content */
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-      flex: 1;
-    }
-
-    .main-content h1 {
-      font-size: 28px;
-      color: #2c5f2d;
-    }
-  </style>
+        .profile {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 14px;
+            text-align: right;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
+    <div class="sidebar">
+        <h2>AgriLinks</h2>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>AgriLinks Admin</h2>
-    <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="farmer_dashboardAL.php">Farmer Dashboard</a></li>
-      <li><a href="driver_dashboardAL.php">Driver Dashboard</a></li>
-      <li><a href="#">Inspector Dashboard</a></li>
-      <li><a href="#">Seller Dashboard</a></li>
-      <li><a href="#">Grading Dashboard</a></li>
-      <li><a href="#">Shipping Dashboard</a></li>
-      <li><a href="#">Reports</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Logout</a></li>
-    </ul>
-  </div>
+        <!-- Always visible to Admin -->
+        <?php if ($role === 'Admin'): ?>
+            <a href="#" onclick="loadPage('admin_home.php')">Dashboard</a>
+            <a href="#" onclick="loadPage('farmer_dashboardAL.php')">Farmer Dashboard</a>
+            <a href="#" onclick="loadPage('driver_dashboardAL.php')">Driver Dashboard</a>
+            <a href="#" onclick="loadPage('inspector_dashboardAL.php')">Inspector Dashboard</a>
+            <a href="#" onclick="loadPage('packer_dashboardAL.php')">Package Manager Dashboard</a>
+            <a href="#" onclick="loadPage('warehouse_manager_dashboardAL.php')">Warehouse Dashboard</a>
+        <?php endif; ?>
 
-  <!-- Main content area -->
-  <div class="main-content">
-    <h1>Welcome, Admin!</h1>
-    <p>Select a dashboard from the sidebar to manage different sections.</p>
-  </div>
+        <a href="logoutAL.php">Logout</a>
+    </div>
 
+    <div class="main-content">
+        <iframe id="contentFrame" src="<?php
+            echo ($role === 'Admin') ? 'admin_home.php' : strtolower($role) . '_dashboardAL.php';
+        ?>"></iframe>
+    </div>
+
+    <script>
+        function loadPage(page) {
+            document.getElementById('contentFrame').src = page;
+        }
+    </script>
 </body>
 </html>

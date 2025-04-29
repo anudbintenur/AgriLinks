@@ -2,14 +2,14 @@
 session_start();
 include "./dbAL.php";
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Driver') {
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Driver' && $_SESSION['role'] !== 'Admin')) {
     header("Location: loginAL.php");
     exit();
 }
 
 $driver_id = $_SESSION['user_id'];
 
-// Get shipment counts by delivery date (daily view)
+// Get shipment counts by delivery date
 $shipmentQuery = "SELECT DATE(delivery_time) AS delivery_date, COUNT(*) AS total 
                   FROM shipping_harvest 
                   WHERE shipping_status = 'Shipped' 
@@ -22,13 +22,26 @@ while ($row = $result->fetch_assoc()) {
     $dataPoints[] = ['date' => $row['delivery_date'], 'total' => $row['total']];
 }
 
-// Get locations for the map
+// Get locations
 $locationQuery = "SELECT from_location, to_location FROM shipping_harvest WHERE shipping_status = 'Shipped'";
 $locationResult = $conn->query($locationQuery);
 
 $locations = [];
 while ($row = $locationResult->fetch_assoc()) {
     $locations[] = $row;
+}
+
+// Get table data
+$shipmentTableQuery = "SELECT shipping_id, from_location, to_location, delivery_time 
+                       FROM shipping_harvest 
+                       WHERE shipping_status = 'Shipped' 
+                       ORDER BY delivery_time DESC 
+                       LIMIT 10";
+$shipmentTableResult = $conn->query($shipmentTableQuery);
+
+$shipmentTableRows = [];
+while ($row = $shipmentTableResult->fetch_assoc()) {
+    $shipmentTableRows[] = $row;
 }
 ?>
 
@@ -89,35 +102,122 @@ while ($row = $locationResult->fetch_assoc()) {
             padding: 20px;
         }
 
+        .performance-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .left-panel, .right-panel {
+            flex: 1;
+        }
+
+        .center-title {
+            text-align: center;
+            font-size: 24px;
+            color: #003f5c;
+            margin-top: 0;
+        }
+
         #chartContainer {
             width: 100%;
-            max-width: 800px;
-            margin-bottom: 30px;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
         #map {
             height: 400px;
             width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .shipment-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .shipment-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .shipment-table th, .shipment-table td {
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .shipment-table thead {
+            background: linear-gradient(to right, #003f5c, #2f95dc); /* deep blue to sky blue */
+            color: white;
+        }
+
+        .shipment-table tbody tr:nth-child(even) {
+            background-color: #e3f2fd;
+        }
+
+        .shipment-table tbody tr:hover {
+            background-color: #bbdefb;
         }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
+    <img src="agrilinkLogo.webp" alt="Logo" class="logo">
+    <div class="profile-pic">
     <img src="profile_pic.png" alt="Logo" class="logo">
-    <div class="profile_pic"></div>
+    </div>
     <a href="driver_dashboardAL.php">Dashboard</a>
-    <a href="driverperformance.php">Performance</a>
+    <a href="driver_performance.php">Performance</a>
 </div>
 
 <div class="main-content">
-    <h2>Daily Shipments</h2>
-    <div id="chartContainer">
-        <canvas id="shipmentChart"></canvas>
-    </div>
+    <div class="performance-content">
 
-    <h2>Delivery Routes</h2>
-    <div id="map"></div>
+        <div class="left-panel">
+            <h2 class="center-title">Daily Shipments</h2>
+            <div id="chartContainer">
+                <canvas id="shipmentChart"></canvas>
+            </div>
+
+            <h2 class="center-title">Delivery Routes</h2>
+            <div id="map"></div>
+        </div>
+
+        <div class="right-panel">
+            <h2 class="center-title">Successful Shipments</h2>
+            <div class="shipment-table-container">
+                <table class="shipment-table">
+                    <thead>
+                        <tr>
+                            <th>Shipping ID</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Completion Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($shipmentTableRows as $row): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['shipping_id']) ?></td>
+                                <td><?= htmlspecialchars($row['from_location']) ?></td>
+                                <td><?= htmlspecialchars($row['to_location']) ?></td>
+                                <td><?= date("d M Y", strtotime($row['delivery_time'])) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script>
@@ -127,7 +227,7 @@ while ($row = $locationResult->fetch_assoc()) {
         datasets: [{
             label: 'Shipments',
             data: <?= json_encode(array_column($dataPoints, 'total')) ?>,
-            backgroundColor: '#97bc62'
+            backgroundColor: '#2f95dc'
         }]
     };
 
@@ -153,7 +253,7 @@ while ($row = $locationResult->fetch_assoc()) {
         }
     });
 
-    const map = L.map('map').setView([22.9734, 78.6569], 5); // Centered in India
+    const map = L.map('map').setView([22.9734, 78.6569], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     <?php foreach ($locations as $loc): ?>
