@@ -43,85 +43,99 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Add Shipping Harvest</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+   <style> body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding-top: 40px;
+    min-height: 100vh;
+    margin: 0;
+}
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-            width: 500px;
-        }
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 800px;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #333;
+}
 
-        form label {
-            display: block;
-            margin-top: 10px;
-            color: #555;
-        }
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
 
-        form input,
-        form select,
-        form button.fetch-btn {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+form label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 3px;
+}
 
-        button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+form input,
+form select,
+form button.fetch-btn {
+    width: 100%;
+    padding: 7px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 
-        button[type="submit"]:hover {
-            background: #45a049;
-        }
+.fetch-btn {
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    grid-column: 2;
+    padding: 7px;
+    margin-top: 22px;
+}
 
-        .success {
-            color: green;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.fetch-btn:hover {
+    background-color: #2980b9;
+}
 
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+button[type="submit"] {
+    grid-column: span 2;
+    padding: 10px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-        .fetch-btn {
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-        }
+button[type="submit"]:hover {
+    background: #45a049;
+}
 
-        .fetch-btn:hover {
-            background-color: #2980b9;
-        }
-    </style>
+.success,
+.error {
+    grid-column: span 2;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}
+</style>
 
     <script>
         function fetchBatchData() {
@@ -165,49 +179,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="container">
-        <h2>Add Shipping Harvest</h2>
-        <?php echo $message; ?>
-        <form method="post" action="">
-            <label>Batch ID:</label>
-            <input type="number" name="batch_id" required>
-            <button type="button" class="fetch-btn" onclick="fetchBatchData()">Fetch Batch Info</button>
+    <h2>Add Shipping Harvest</h2>
+    <?php echo $message; ?>
+    <form method="post" action="">
+        <label for="batch_id">Batch ID:</label>
+        <input type="number" name="batch_id" id="batch_id" required>
 
-            <label>Farmer ID:</label>
-            <input type="number" name="farmer_id" readonly required>
+        <label>&nbsp;</label>
+        <button type="button" class="fetch-btn" onclick="fetchBatchData()">Fetch Batch Info</button>
 
-            <label>Crop Name:</label>
-            <input type="text" name="crop_name" readonly required>
+        <label for="farmer_id">Farmer ID:</label>
+        <input type="number" name="farmer_id" id="farmer_id" readonly required>
 
-            <label>Quantity:</label>
-            <input type="number" name="quantity" readonly required>
+        <label for="crop_name">Crop Name:</label>
+        <input type="text" name="crop_name" id="crop_name" readonly required>
 
-            <label>Weight (kg):</label>
-            <input type="text" name="weight" readonly required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" readonly required>
 
+        <label for="weight">Weight (kg):</label>
+        <input type="text" name="weight" id="weight" readonly required>
 
-            <label>Farmer Name:</label>
-            <input type="text" name="farmer_name" required>
+        <label for="farmer_name">Farmer Name:</label>
+        <input type="text" name="farmer_name" id="farmer_name" required>
 
-            <label>From Location:</label>
-            <input type="text" name="from_location" required>
+        <label for="from_location">From Location:</label>
+        <input type="text" name="from_location" id="from_location" required>
 
-            <label>To Location:</label>
-            <input type="text" name="to_location" required>
+        <label for="to_location">To Location:</label>
+        <input type="text" name="to_location" id="to_location" required>
 
-            <label>Shipping Status:</label>
-            <select name="shipping_status" required>
-                <option value="Pending">Pending</option>
-                <option value="Shipped">Shipped</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Delivered">Delivered</option>
-            </select>
+        <label for="shipping_status">Shipping Status:</label>
+        <select name="shipping_status" id="shipping_status" required>
+            <option value="Pending">Pending</option>
+            <option value="Shipped">Shipped</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Delivered">Delivered</option>
+        </select>
 
-            <label>Delivery Time:</label>
-            <input type="datetime-local" name="delivery_time" required>
+        <label for="delivery_time">Delivery Time:</label>
+        <input type="datetime-local" name="delivery_time" id="delivery_time" required>
 
-            <button type="submit">Add Shipping Harvest</button>
-        </form>
-    </div>
+        <button type="submit">Add Shipping Harvest</button>
+    </form>
+</div>
+
 
 </body>
 
