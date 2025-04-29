@@ -48,22 +48,122 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html>
 <head>
     <title>Edit User</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
 </head>
 <body>
-<h2>Edit User</h2>
-<form method="POST">
-    Username: <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>" required><br><br>
-    Role: 
-    <select name="role" required>
-        <option value="Admin" <?= $user['role'] === 'Admin' ? 'selected' : '' ?>>Admin</option>
-        <option value="User" <?= $user['role'] === 'User' ? 'selected' : '' ?>>User</option>
-    </select><br><br>
-    Name: <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" required><br><br>
-    Email: <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required><br><br>
-    DOB: <input type="date" name="dob" value="<?= htmlspecialchars($user['dob']) ?>" required><br><br>
-    Address: <input type="text" name="address" value="<?= htmlspecialchars($user['address']) ?>" required><br><br>
-    <button type="submit">Update User</button>
-    <a href="admin_home.php"><button type="button">Cancel</button></a>
-</form>
+
+<div class="container">
+    <h2>Edit User</h2>
+    <form method="POST">
+        <label>Username:</label>
+        <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>" required>
+
+        <label>Role:</label>
+        <select name="role" required>
+            <option value="Admin" <?= $user['role'] === 'Admin' ? 'selected' : '' ?>>Admin</option>
+            <option value="User" <?= $user['role'] === 'User' ? 'selected' : '' ?>>User</option>
+        </select>
+
+        <label>Name:</label>
+        <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+
+        <label>DOB:</label>
+        <input type="date" name="dob" value="<?= htmlspecialchars($user['dob']) ?>" required>
+
+        <label>Address:</label>
+        <input type="text" name="address" value="<?= htmlspecialchars($user['address']) ?>" required>
+
+        <div class="btn-group">
+            <button type="submit">Update User</button>
+            <a href="admin_home.php" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>
